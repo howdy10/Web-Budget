@@ -1,4 +1,4 @@
-import React, { useState, forwardRef } from 'react';
+import React, { useState, forwardRef, useEffect } from 'react';
 import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -25,6 +25,9 @@ import {
   Remove,
   ViewColumn,
 } from '@material-ui/icons';
+import axios from 'axios';
+import Typography from '@material-ui/core/Typography';
+import Chip from '@material-ui/core/Chip';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -47,20 +50,29 @@ const tableIcons = {
 };
 
 const columns = [
-  { title: 'Date', field: 'date' },
+  { title: 'Date', field: 'date', type: 'date' },
   { title: 'Name', field: 'name' },
-  { title: 'Ship To', field: 'shipTo' },
-  { title: 'Payment Method', field: 'payment' },
-  { title: 'Sales Amount', field: 'amount' },
+  {
+    title: 'Category',
+    field: 'categories',
+    render: (rowData) => rowData.categories.map((c) => <Chip label={c} color="primary" size="small" />),
+  },
+  { title: 'Notes', field: 'notes' },
+  { title: 'Amount', field: 'amount', type: 'currency' },
 ];
 
 export default function Transactions() {
-  const [data, setData] = React.useState([
-    { date: '16 Mar, 2019', name: 'Elvis Presley', shipTo: 'Tupelo, MS', payment: 'VISA ⠀•••• 3719', amount: 312.44 },
-    { date: '16 Mar, 2019', name: 'Paul McCartney', shipTo: 'London, UK', payment: 'VISA ⠀•••• 2574', amount: 866.99 },
-    { date: '16 Mar, 2019', name: 'Tom Scholz', shipTo: 'Boston, MA', payment: 'MC ⠀•••• 1253', amount: 100.81 },
-    { date: '16 Mar, 2019', name: 'Michael Jackson', shipTo: 'Gary, IN', payment: 'AMEX ⠀•••• 2000', amount: 654.39 },
-    { date: '15 Mar, 2019', name: 'Bruce Springsteen', shipTo: 'Long Branch, NJ', payment: 'VISA ⠀•••• 5919', amount: 212.79 },
-  ]);
+  const [data, setData] = React.useState();
+  useEffect(() => {
+    axios
+      .get('http://localhost:4000/transaction/')
+      .then((response) => {
+        setData(response.data);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }, []);
+
   return <MaterialTable title="Recent Transactions" icons={tableIcons} columns={columns} data={data} />;
 }
