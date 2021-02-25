@@ -28,6 +28,7 @@ import {
 import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
 import Chip from '@material-ui/core/Chip';
+import ExpressService from '../Services/ExpressService';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -55,23 +56,18 @@ const columns = [
   {
     title: 'Category',
     field: 'categories',
-    render: (rowData) => rowData.categories.map((c) => <Chip label={c} color="primary" size="small" />),
+    render: (rowData) => rowData.categories.map((c) => <Chip key={c} label={c} color="primary" size="small" />),
   },
   { title: 'Notes', field: 'notes' },
   { title: 'Amount', field: 'amount', type: 'currency' },
 ];
-
+const service = new ExpressService();
 export default function Transactions() {
   const [data, setData] = React.useState();
   useEffect(() => {
-    axios
-      .get('http://localhost:4000/transaction/')
-      .then((response) => {
-        setData(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    service.getTransactions().then((d) => {
+      setData(d);
+    });
   }, []);
 
   return <MaterialTable title="Recent Transactions" icons={tableIcons} columns={columns} data={data} />;

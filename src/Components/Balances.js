@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Title from './Title';
 import currency from 'currency.js';
-import axios from 'axios';
+import ExpressService from '../Services/ExpressService';
 
 function preventDefault(event) {
   event.preventDefault();
@@ -16,21 +16,17 @@ const useStyles = makeStyles({
   },
 });
 
+const service = new ExpressService();
 export default function Balances() {
   const classes = useStyles();
 
-  const [currentBalance, setCurrentBalance] = React.useState(currency(3024.0));
+  const [currentBalance, setCurrentBalance] = React.useState(currency(0.0));
   const [netBalance, setNetBalance] = React.useState(currency(110.1));
 
   useEffect(() => {
-    axios
-      .get('http://localhost:4000/account/603676bcefa592daf1dfe668')
-      .then((response) => {
-        setCurrentBalance(currency(response.data.amount));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    service.getAccount().then((d) => {
+      setCurrentBalance(currency(d.amount));
+    });
   }, []);
 
   return (

@@ -14,22 +14,22 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 export const mainListItems = (
   <div>
-    <ListItem button>
-      <ListItemIcon>
-        <Link to="/">
+    <Link to="/">
+      <ListItem button>
+        <ListItemIcon>
           <DashboardIcon />
-        </Link>
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <Link to="/newTransaction">
+        </ListItemIcon>
+        <ListItemText primary="Dashboard" />
+      </ListItem>
+    </Link>
+    <Link to="/newTransaction">
+      <ListItem button>
+        <ListItemIcon>
           <PostAddIcon />
-        </Link>
-      </ListItemIcon>
-      <ListItemText primary="Add Transaction" />
-    </ListItem>
+        </ListItemIcon>
+        <ListItemText primary="Add Transaction" />
+      </ListItem>
+    </Link>
     <ListItem button>
       <ListItemIcon>
         <PeopleIcon />
