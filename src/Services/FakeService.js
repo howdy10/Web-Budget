@@ -34,3 +34,7 @@ export function getTransactions() {
 export function getAccount() {
   return Promise.resolve({ amount: faker.finance.amount() });
 }
+
+export function getCategories() {
+  return Promise.resolve(['Test', 'Snack', 'Gas', 'Supplies', 'Kids']);
+}

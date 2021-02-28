@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormGroup from '@material-ui/core/FormGroup';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -12,7 +10,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import ExpressService from '../Services/ExpressService';
 
+const service = new ExpressService();
 export default function CategoryDialog(props) {
   const { onClose, value: valueProp, open, ...other } = props;
   const [value, setValue] = React.useState(valueProp);
@@ -21,7 +21,9 @@ export default function CategoryDialog(props) {
 
   React.useEffect(() => {
     if (!open) {
-      setCategories(getCategories());
+      service.getCategories().then((c) => {
+        setCategories(c);
+      });
       setChecked(value);
     }
   }, [valueProp, open]);
@@ -81,25 +83,6 @@ export default function CategoryDialog(props) {
       </DialogActions>
     </Dialog>
   );
-}
-
-function getCategories() {
-  return [
-    'None',
-    'Atria',
-    'Callisto',
-    'Dione',
-    'Ganymede',
-    'Hangouts Call',
-    'Luna',
-    'Oberon',
-    'Phobos',
-    'Pyxis',
-    'Sedna',
-    'Titania',
-    'Triton',
-    'Umbriel',
-  ];
 }
 
 CategoryDialog.propTypes = {
