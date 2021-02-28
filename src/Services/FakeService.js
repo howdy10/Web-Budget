@@ -36,5 +36,14 @@ export function getAccount() {
 }
 
 export function getCategories() {
-  return Promise.resolve(['Test', 'Snack', 'Gas', 'Supplies', 'Kids']);
+  return Promise.resolve([
+    {
+      name: 'Food',
+      subcategories: ['Groceries', 'Restaurants'],
+    },
+    {
+      name: 'Cars',
+      subcategories: ['Gas', 'Maintenance'],
+    },
+  ]);
 }
