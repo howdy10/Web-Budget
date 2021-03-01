@@ -37,7 +37,6 @@ export default function CategoryDialog(props) {
   const classes = useStyles();
 
   const { onClose, value: valueProp, open, ...other } = props;
-  const [value, setValue] = React.useState(valueProp);
   const [checked, setChecked] = React.useState([]);
   const [categories, setCategories] = React.useState([]);
 
@@ -46,12 +45,12 @@ export default function CategoryDialog(props) {
       service.getCategories().then((c) => {
         setCategories(c);
       });
-      setChecked(value);
     }
+    setChecked(valueProp);
   }, [valueProp, open]);
 
   const handleCancel = () => {
-    onClose(value);
+    onClose(valueProp);
   };
 
   const handleOk = () => {
@@ -90,7 +89,7 @@ export default function CategoryDialog(props) {
       <List className={classes.root} subheader={<li />}>
         {categories.map((sectionId) => (
           <li key={`section-${sectionId.name}`} className={classes.listSection}>
-            <ul>
+            <ul className={classes.ul}>
               <ListSubheader>{`${sectionId.name}`}</ListSubheader>
               {sectionId.subcategories.map((value) => {
                 const labelId = `checkbox-list-label-${value}`;
