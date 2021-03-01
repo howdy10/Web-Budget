@@ -23,19 +23,12 @@ import Balances from '../Components/Balances';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Button from '@material-ui/core/Button';
+import NumberFormat from 'react-number-format';
+import CategoryDialog from '../Components/CategoryDialog';
+import Copyright from '../Components/Copyright';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
 
 const drawerWidth = 240;
 
@@ -107,70 +100,203 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(4),
     paddingBottom: theme.spacing(4),
   },
+  layout: {
+    width: 'auto',
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+    [theme.breakpoints.up(600 + theme.spacing(2) * 2)]: {
+      width: 600,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+    },
+  },
   paper: {
+    marginTop: theme.spacing(3),
+    marginBottom: theme.spacing(3),
     padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
+    [theme.breakpoints.up(600 + theme.spacing(3) * 2)]: {
+      marginTop: theme.spacing(6),
+      marginBottom: theme.spacing(6),
+      padding: theme.spacing(3),
+    },
   },
   fixedHeight: {
     height: 240,
+  },
+  buttons: {
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
 }));
 
 export default function NewTransaction(props) {
   const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const [transactionToAdd, setTransactionToAdd] = React.useState({ date: new Date(), amount: 0, categories: [], notes: '' });
+
+  const [open, setOpen] = React.useState(false);
+
+  const handleDateChange = (date) => {
+    setTransactionToAdd((prevState) => ({
+      ...prevState,
+      date: date,
+    }));
+  };
+
+  const handleAmountChange = (a) => {
+    setTransactionToAdd((prevState) => ({
+      ...prevState,
+      amount: a.target.value,
+    }));
+  };
+
+  const handleCategoryChange = (c) => {
+    setTransactionToAdd((prevState) => ({
+      ...prevState,
+      categories: c,
+    }));
+  };
+
+  const handleMerchantChange = (m) => {
+    setTransactionToAdd((prevState) => ({
+      ...prevState,
+      merchant: m.target.value,
+    }));
+  };
+
+  const handleNotesChange = (n) => {
+    setTransactionToAdd((prevState) => ({
+      ...prevState,
+      notes: n.target.value,
+    }));
+  };
+
+  const handleClickListItem = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (newValue) => {
+    setOpen(false);
+
+    if (newValue) {
+      setTransactionToAdd((prevState) => ({
+        ...prevState,
+        categories: newValue,
+      }));
+    }
+  };
+
+  const handleSubmit = () => {
+    console.log(transactionToAdd);
+  };
   return (
     <Container maxWidth="lg" className={classes.container}>
       <Grid container spacing={3}>
         {/* Chart */}
         <Grid item xs={12}>
-          <Paper>
-            <React.Fragment>
-              <Typography variant="h6" gutterBottom>
-                Shipping address
-              </Typography>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <TextField required id="firstName" name="firstName" label="First name" fullWidth autoComplete="given-name" />
+          <main className={classes.layout}>
+            <Paper className={classes.paper}>
+              <React.Fragment>
+                <Typography variant="h6" gutterBottom>
+                  New Transaction
+                </Typography>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Amount"
+                      value={transactionToAdd.amount}
+                      onChange={handleAmountChange}
+                      name="amount"
+                      id="amount"
+                      InputProps={{
+                        inputComponent: NumberFormatCustom,
+                      }}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <KeyboardDatePicker
+                        disableToolbar
+                        variant="inline"
+                        format="MM/dd/yyyy"
+                        margin="normal"
+                        id="date"
+                        label="Date"
+                        value={transactionToAdd.date}
+                        onChange={handleDateChange}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change date',
+                        }}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField required id="name" name="name" label="Merchant" fullWidth onChange={handleMerchantChange} variant="outlined" />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      disabled
+                      id="category"
+                      name="category"
+                      label="Category"
+                      fullWidth
+                      value={transactionToAdd.categories}
+                      variant="outlined"
+                    />
+                    <Button onClick={handleClickListItem} color="primary" variant="contained">
+                      Select
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      required
+                      id="notes"
+                      name="notes"
+                      label="Notes"
+                      fullWidth
+                      multiline
+                      rows={4}
+                      variant="outlined"
+                      onChange={handleNotesChange}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField required id="lastName" name="lastName" label="Last name" fullWidth autoComplete="family-name" />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField required id="address1" name="address1" label="Address line 1" fullWidth autoComplete="shipping address-line1" />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField id="address2" name="address2" label="Address line 2" fullWidth autoComplete="shipping address-line2" />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField required id="city" name="city" label="City" fullWidth autoComplete="shipping address-level2" />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField id="state" name="state" label="State/Province/Region" fullWidth />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField required id="zip" name="zip" label="Zip / Postal code" fullWidth autoComplete="shipping postal-code" />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField required id="country" name="country" label="Country" fullWidth autoComplete="shipping country" />
-                </Grid>
-                <Grid item xs={12}>
-                  <FormControlLabel
-                    control={<Checkbox color="secondary" name="saveAddress" value="yes" />}
-                    label="Use this address for payment details"
-                  />
-                </Grid>
-              </Grid>
-            </React.Fragment>
-          </Paper>
+                <Button variant="contained" color="primary" onClick={handleSubmit} className={classes.button}>
+                  Submit
+                </Button>
+              </React.Fragment>
+            </Paper>
+          </main>
         </Grid>
       </Grid>
       <Box pt={4}>
         <Copyright />
       </Box>
+      <CategoryDialog id="ringtone-menu" keepMounted open={open} onClose={handleClose} value={transactionToAdd.categories} />
     </Container>
+  );
+}
+
+function NumberFormatCustom(props) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value,
+          },
+        });
+      }}
+      thousandSeparator
+      isNumericString
+      prefix="$"
+    />
   );
 }
