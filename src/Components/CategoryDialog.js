@@ -70,7 +70,7 @@ export default function CategoryDialog(props) {
     setChecked(newChecked);
   };
   return (
-    <Dialog disableBackdropClick disableEscapeKeyDown maxWidth="xs" aria-labelledby="confirmation-dialog-title" open={open} {...other}>
+    <Dialog maxWidth="xs" aria-labelledby="confirmation-dialog-title" open={open} {...other}>
       <DialogTitle id="confirmation-dialog-title">Categories</DialogTitle>
       <DialogContent dividers>{getSublists()}</DialogContent>
       <DialogActions>

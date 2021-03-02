@@ -7,68 +7,72 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
-import MaterialTable from 'material-table';
-import {
-  AddBox,
-  Check,
-  Clear,
-  DeleteOutline,
-  ChevronRight,
-  Edit,
-  SaveAlt,
-  FilterList,
-  FirstPage,
-  LastPage,
-  ChevronLeft,
-  Search,
-  ArrowDownward,
-  Remove,
-  ViewColumn,
-} from '@material-ui/icons';
-import axios from 'axios';
-import Typography from '@material-ui/core/Typography';
+
 import Chip from '@material-ui/core/Chip';
 import ExpressService from '../Services/ExpressService';
-
-const tableIcons = {
-  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
-};
+import Paper from '@material-ui/core/Paper';
+import TableContainer from '@material-ui/core/TableContainer';
 
 const columns = [
-  { title: 'Date', field: 'date', type: 'date' },
-  { title: 'Name', field: 'name' },
+  { title: 'Date', field: 'date', type: 'date', key: 1 },
+  { title: 'Name', field: 'name', key: 2 },
   {
     title: 'Category',
     field: 'categories',
-    render: (rowData) => rowData.categories.map((c) => <Chip key={c} label={c} color="primary" size="small" />),
+    key: 3,
   },
-  { title: 'Notes', field: 'notes' },
-  { title: 'Amount', field: 'amount', type: 'currency' },
+  { title: 'Notes', field: 'notes', key: 4 },
+  { title: 'Amount', field: 'amount', type: 'currency', key: 5 },
 ];
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+  hideLastBorder: {
+    '&:last-child td, &:last-child th': {
+      border: 0,
+    },
+  },
+});
+
 const service = new ExpressService();
 export default function Transactions() {
-  const [data, setData] = React.useState();
+  const classes = useStyles();
+  const [data, setData] = React.useState([]);
   useEffect(() => {
     service.getTransactions().then((d) => {
       setData(d);
     });
   }, []);
 
-  return <MaterialTable title="Recent Transactions" icons={tableIcons} columns={columns} data={data} />;
+  return (
+    <TableContainer component={Paper}>
+      <Table className={classes.table} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            {columns.map((col) => (
+              <TableCell key={col.key}>{col.title}</TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {data.map((row) => (
+            <TableRow key={row.id}>
+              <TableCell align="left">{row.date}</TableCell>
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="left">
+                {row.categories.map((c) => (
+                  <Chip key={c} label={c} color="primary" size="small" />
+                ))}
+              </TableCell>
+              <TableCell align="left">{row.notes}</TableCell>
+              <TableCell align="right">{row.amount}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
 }

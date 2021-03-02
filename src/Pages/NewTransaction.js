@@ -8,7 +8,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
@@ -27,8 +26,15 @@ import Button from '@material-ui/core/Button';
 import NumberFormat from 'react-number-format';
 import CategoryDialog from '../Components/CategoryDialog';
 import Copyright from '../Components/Copyright';
-import DateFnsUtils from '@date-io/date-fns';
-import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
+// import DateFnsUtils from '@date-io/date-fns';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import InputLabel from '@material-ui/core/InputLabel';
+//import { MuiPickersUtilsProvider, KeyboardTimePicker, KeyboardDatePicker } from '@material-ui/pickers';
+
+import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
+import DatePicker from '@material-ui/lab/DatePicker';
+import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 
 const drawerWidth = 240;
 
@@ -202,34 +208,24 @@ export default function NewTransaction(props) {
                 </Typography>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
-                    <TextField
-                      label="Amount"
+                    <InputLabel htmlFor="amount">Amount</InputLabel>
+                    <OutlinedInput
+                      id="amount"
                       value={transactionToAdd.amount}
                       onChange={handleAmountChange}
-                      name="amount"
-                      id="amount"
-                      InputProps={{
-                        inputComponent: NumberFormatCustom,
-                      }}
-                      variant="outlined"
+                      startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                      label="Amount"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <KeyboardDatePicker
-                        disableToolbar
-                        variant="inline"
-                        format="MM/dd/yyyy"
-                        margin="normal"
-                        id="date"
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                      <DatePicker
                         label="Date"
                         value={transactionToAdd.date}
                         onChange={handleDateChange}
-                        KeyboardButtonProps={{
-                          'aria-label': 'change date',
-                        }}
+                        renderInput={(params) => <TextField {...params} />}
                       />
-                    </MuiPickersUtilsProvider>
+                    </LocalizationProvider>
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField required id="name" name="name" label="Merchant" fullWidth onChange={handleMerchantChange} variant="outlined" />
@@ -276,27 +272,5 @@ export default function NewTransaction(props) {
       </Box>
       <CategoryDialog id="ringtone-menu" keepMounted open={open} onClose={handleClose} value={transactionToAdd.categories} />
     </Container>
-  );
-}
-
-function NumberFormatCustom(props) {
-  const { inputRef, onChange, ...other } = props;
-
-  return (
-    <NumberFormat
-      {...other}
-      getInputRef={inputRef}
-      onValueChange={(values) => {
-        onChange({
-          target: {
-            name: props.name,
-            value: values.value,
-          },
-        });
-      }}
-      thousandSeparator
-      isNumericString
-      prefix="$"
-    />
   );
 }
