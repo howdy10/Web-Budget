@@ -21,7 +21,6 @@ import { mainListItems, secondaryListItems } from './listItems';
 import Home from '../Pages/Home';
 import NewTransaction from '../Pages/NewTransaction';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import ConfirmationDialog from '../Pages/Test';
 
 const drawerWidth = 240;
 

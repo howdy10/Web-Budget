@@ -1,29 +1,12 @@
 import React from 'react';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
 import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Link from '@material-ui/core/Link';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import Transactions from '../Components/Transactions';
-import Balances from '../Components/Balances';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
-import NumberFormat from 'react-number-format';
 import CategoryDialog from '../Components/CategoryDialog';
 import Copyright from '../Components/Copyright';
 // import DateFnsUtils from '@date-io/date-fns';
@@ -35,6 +18,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import DatePicker from '@material-ui/lab/DatePicker';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
+import ExpressService from '../Services/ExpressService';
 
 const drawerWidth = 240;
 
@@ -135,6 +119,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const service = new ExpressService();
 export default function NewTransaction(props) {
   const classes = useStyles();
 
@@ -194,6 +179,7 @@ export default function NewTransaction(props) {
 
   const handleSubmit = () => {
     console.log(transactionToAdd);
+    service.writeTransaction();
   };
   return (
     <Container maxWidth="lg" className={classes.container}>
