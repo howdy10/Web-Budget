@@ -6,6 +6,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import currency from 'currency.js';
 import Title from './Title';
 
 import Chip from '@material-ui/core/Chip';
@@ -40,8 +41,8 @@ export default function Transactions() {
   const classes = useStyles();
   const [data, setData] = React.useState([]);
   useEffect(() => {
-    service.getTransactions().then((d) => {
-      setData(d);
+    service.getTransactions().then((response) => {
+      setData(response);
     });
   }, []);
 
@@ -63,12 +64,12 @@ export default function Transactions() {
                 {row.name}
               </TableCell>
               <TableCell align="left">
-                {row.categories.map((c) => (
+                {row.categories?.map((c) => (
                   <Chip key={c} label={c} color="primary" size="small" />
                 ))}
               </TableCell>
               <TableCell align="left">{row.notes}</TableCell>
-              <TableCell align="right">{row.amount}</TableCell>
+              <TableCell align="right">{currency(row.amount).format()}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -34,28 +34,34 @@ export default class ExpressService extends React.Component {
     this.database = firebase.database();
   }
 
-  writeTransaction() {
-    firebase
-      .database()
-      .ref('transaction/')
-      .push({
-        name: this.faker.company.companyName(),
-        date: this.faker.date.past().toString(),
-        amount: this.faker.finance.amount(),
-        notes: this.faker.lorem.words(),
-        categories: [this.faker.lorem.word(), this.faker.lorem.word()],
-      });
+  writeTransaction(T) {
+    firebase.database().ref('transaction/').push({
+      name: T.merchant,
+      date: T.date.getTime(),
+      amount: T.amount,
+      notes: T.notes,
+      categories: T.categories,
+    });
   }
 
-  async getTransactions() {
-    if (this.fake) {
-      return getTransactions();
-    }
-    return axios
-      .get(this.baseUrl + 'transaction/')
-      .then((response) => response.data)
-      .catch(function (error) {
-        console.log(error);
+  getTransactions() {
+    var list = [];
+    return this.database
+      .ref('transaction')
+      .once('value', function (snapshot) {
+        snapshot.forEach(function (childsnapshot) {
+          list.push({
+            id: childsnapshot.key,
+            amount: childsnapshot.val().amount,
+            name: childsnapshot.val().name,
+            date: new Date(childsnapshot.val().date).toDateString(),
+            notes: childsnapshot.val().notes,
+            categories: childsnapshot.val().categories,
+          });
+        });
+      })
+      .then(() => {
+        return list;
       });
   }
   async getAccount() {

@@ -123,14 +123,14 @@ const service = new ExpressService();
 export default function NewTransaction(props) {
   const classes = useStyles();
 
-  const [transactionToAdd, setTransactionToAdd] = React.useState({ date: new Date(), amount: 0, categories: [], notes: '' });
+  const [transactionToAdd, setTransactionToAdd] = React.useState({ merchant: '', date: new Date(), amount: 0, categories: [], notes: '' });
 
   const [open, setOpen] = React.useState(false);
 
   const handleDateChange = (date) => {
     setTransactionToAdd((prevState) => ({
       ...prevState,
-      date: date,
+      date: new Date(date),
     }));
   };
 
@@ -178,8 +178,7 @@ export default function NewTransaction(props) {
   };
 
   const handleSubmit = () => {
-    console.log(transactionToAdd);
-    service.writeTransaction();
+    service.writeTransaction(transactionToAdd);
   };
   return (
     <Container maxWidth="lg" className={classes.container}>
